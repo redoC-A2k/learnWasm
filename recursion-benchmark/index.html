@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <script>
+
+    function fibJS(n) {
+        if(n == 0 || n == 1) {
+            return n;
+        }
+        return fibJS(n - 1) + fibJS(n - 2);
+    }
+
+    async function fetchAndInstantiate(){
+      const response = await fetch("test.wasm");
+      const buffer = await response.arrayBuffer();
+      const prog = await WebAssembly.instantiate(buffer);
+      console.log("prog",prog)
+      const n = 40;
+      const fibWasm = prog.instance.exports.fib;
+
+      let start = new Date().getTime();
+      fibWasm(n);
+      console.log(new Date().getTime() - start);
+
+      start = new Date().getTime();
+      fibJS(n);
+      console.log(new Date().getTime() - start);
+    }
+
+    fetchAndInstantiate()
+
+    </script>
+  </body>
+</html>
